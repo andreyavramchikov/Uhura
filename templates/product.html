@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {{ product.name }}
+    <form action="{% url 'add_to_cart' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ product.id }}" />
+        <input type="text" name="quantity" value="2" />
+        <input type="text" name="unit_price" value="10" />
+        <input type="submit" />
+    </form>
 
-
-    <button >Add to BAG</button>
 {% endblock %}
