@@ -1,0 +1,84 @@
+from fabric.api import env, run
+from fabric.operations import sudo
+
+# env.hosts = ['127.0.0.1:2222']
+# env.user = 'vagrant'
+# env.key_filename = '/home/andrey/Dropbox/playtogether/.vagrant/machines/default/virtualbox/private_key'
+env.user = 'ubuntu'
+env.hosts = [
+    'ec2-174-129-58-97.compute-1.amazonaws.com'
+]
+
+
+env.key_filename = '/home/andrey/Uhura.pem'
+
+env.project_name = 'Uhura'
+env.path = '/home/ubuntu/projects/%(project_name)s' % env
+# env.path = '/home/vagrant/projects/%(project_name)s' % env
+env.env_path = '%(path)s/env' % env
+env.repo_path = '%(path)s/repository' % env
+env.supervisor_log_path = '%(path)s/repository/logs' % env
+# ssh -i ~/Test.pem ubuntu@http://ec2-52-207-246-132.compute-1.amazonaws.com
+
+
+def setup():
+    # STILL NEED TO INSTALL MANUALLY MYSQL AND PYTHON-MYSQL ETC
+    sudo('apt-get -y update')
+    sudo('apt-get -y upgrade')
+    sudo('apt-get -y install python-dev')
+    sudo('apt-get -y install python-virtualenv')
+    sudo('apt-get -y install libmysqlclient-dev')
+    sudo('apt-get install -y git')
+    sudo('apt-get install -y nginx')
+    sudo('apt-get install -y build-essential python')
+    sudo('apt-get install -y python-dev')
+
+
+# deploy site with nginx-uwsgi conjunction
+def deploy():
+    sudo('rm -rf projects')
+    sudo('rm -rf /etc/nginx/sites-enabled/mysite_nginx.conf')
+    setup_directories()
+    setup_virtualenv()
+    clone_repo()
+    install_requirements()
+    sudo(
+        'ln -s /home/ubuntu/projects/Uhura/repository/mysite_nginx.conf /etc/nginx/sites-enabled/')
+    sudo('/etc/init.d/nginx restart')
+    run('source %(env_path)s/bin/activate; %(env_path)s/bin/python %(repo_path)s/manage.py migrate' % env)
+    run('source %(env_path)s/bin/activate; pip install uwsgi' % env)
+    run('source %(env_path)s/bin/activate; uwsgi --ini %(repo_path)s/mysite_uwsgi.ini' % env)
+
+
+def install_requirements():
+    """
+    Install the required packages using pip.
+    """
+    run('source %(env_path)s/bin/activate; pip install -r %(repo_path)s/requirements.txt' % env)
+
+
+def clone_repo():
+    """
+    Do initial clone of the git repository.
+    """
+    run('git clone https://github.com/andreyavramchikov/%(project_name)s.git %(repo_path)s' % env)
+
+
+def setup_directories():
+    """
+    Create directories necessary for deployment.
+    """
+    run('mkdir -p %(path)s' % env)
+    run('mkdir -p %(env_path)s' % env)
+
+
+def activate_virtualenv():
+    run('source %(env_path)s/bin/activate;' % env)
+
+
+def setup_virtualenv():
+    """
+    Setup a fresh virtualenv.
+    """
+    run('virtualenv %(env_path)s --no-site-packages;' % env)
+    run('source %(env_path)s/bin/activate;' % env)

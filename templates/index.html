@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block content %}
     <div class="listItems">
-        <div class="">
+        <h1>Publications LIST</h1>
+        <div class="row">
             {% for product in products %}
-                <a href="{% url 'product' product.pk %}">
-                {{ product.id }}
-                {{ product.name }} <br>
-                </a>
-
-
+                <div class="col-xs-3">
+                    <a href="{% url 'product' product.pk %}">
+                        {{ product.name }}
+                        <img src="{% static 'img/publication.jpg' %}"/>
+                    </a>
+                </div>
             {% endfor %}
         </div>
     </div>

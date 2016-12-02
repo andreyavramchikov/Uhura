@@ -42,3 +42,24 @@ class Cart(object):
             item.unit_price = unit_price
             item.quantity += int(quantity)
             item.save()
+
+    def count(self):
+        result = 0
+        for item in self.cart.item_set.all():
+            result += 1 * item.quantity
+        return result
+
+    def summary(self):
+        result = 0
+        for item in self.cart.cartitem_set.all():
+            result += item.total_price
+        return result - self.cart.discount
+
+    def apply_discount(self, discount):
+        cart = self.cart
+        cart.discount = discount
+        cart.save()
+
+    def clear(self):
+        for item in self.cart.cartitem_set.all():
+            item.delete()
