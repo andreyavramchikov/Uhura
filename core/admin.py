@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from core.models import Product, ProductAudio, ProductPDF, ProductPaperback
+from .models import Product, ProductAudio, ProductPDF, ProductPaperback
 
 
 class ProductAudioInline(admin.TabularInline):

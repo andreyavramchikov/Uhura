@@ -19,7 +19,8 @@ class Cart(object):
         for item in self.cart.cartitem_set.all():
             yield item
 
-    def new(self, request):
+    @staticmethod
+    def new(request):
         cart = models.Cart.objects.create(creation_date=datetime.datetime.now())
         cart.save()
         request.session[CART_ID] = cart.id

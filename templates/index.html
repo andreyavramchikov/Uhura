@@ -8,7 +8,7 @@
             {% for product in products %}
                 <div class="col-xs-3">
                     <a href="{% url 'product' product.pk %}">
-                        {{ product.name }}
+                        <p class="text-center">{{ product.name }}</p>
                         <img src="{% static 'img/publication.jpg' %}"/>
                     </a>
                 </div>

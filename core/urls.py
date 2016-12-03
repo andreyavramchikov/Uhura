@@ -1,7 +1,6 @@
 from django.conf.urls import url
 
-from core.views import ProductView
-from .views import HomeView, AddToCartView, CartView, PlaceOrderView, ApplyDiscount
+from .views import HomeView, ProductView, AddToCartView, CartView, PlaceOrderView, ApplyDiscount
 
 urlpatterns = [
     url(r'^$', HomeView.as_view(), name='home'),

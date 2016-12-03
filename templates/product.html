@@ -58,6 +58,21 @@
             </form>
         </div>
     {% endif %}
-
+    <div class="clearfix"></div>
+    {% if related_items %}
+        <div class="related-items">
+            <h1>Related Items</h1>
+            {% for item in related_items %}
+                <a href="{% url 'product' item.pk %}">
+                    <div class="columns">
+                        <ul class="price">
+                            <li class="header">{{ item.name }}</li>
+                            <li><img src="{% static 'img/publication.jpg' %}"/></li>
+                        </ul>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
 
 {% endblock %}

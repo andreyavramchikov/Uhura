@@ -6,10 +6,10 @@ from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
-from .utils import send_confirmation_email
 from .cart import Cart
 from .forms import CreateOrder
 from .models import Product, Cart as CartModel, ProductAudio, ProductPDF, ProductPaperback
+from .utils import send_confirmation_email
 
 
 class HomeView(ListView):
@@ -23,13 +23,13 @@ class ProductView(DetailView):
     template_name = 'product.html'
     context_object_name = 'product'
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        context = self.get_context_data(object=self.object)
+    def get_context_data(self, **kwargs):
+        context = super(ProductView, self).get_context_data(**kwargs)
         context['audio'] = self.object.productaudio_set.first()
         context['pdf'] = self.object.productpdf_set.first()
         context['paperback'] = self.object.productpaperback_set.first()
-        return self.render_to_response(context)
+        context['related_items'] = Product.objects.all()
+        return context
 
 
 class AddToCartView(CreateView):
