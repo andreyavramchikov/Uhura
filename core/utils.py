@@ -11,6 +11,6 @@ def send_confirmation_email():
         title,
         msg_plain,
         'aldrson2@gmail.com',
-        [settings.EMAIL_HOST_USER],
+        ['aldrson2@gmail.com'],
         html_message=msg_html,
     )

@@ -2,8 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
-from core.models import Publication, PublicationEntity
-from .models import Order, Discount
+from .models import Order, Discount, PublicationEntity
 
 
 class CreateOrder(forms.ModelForm):
