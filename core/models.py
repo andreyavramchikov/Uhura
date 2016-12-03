@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -43,7 +43,7 @@ class ProductPaperback(models.Model):
 class Cart(models.Model):
     creation_date = models.DateTimeField(verbose_name=_('creation date'))
     checked_out = models.BooleanField(default=False, verbose_name=_('checked out'))
-    discount = models.PositiveIntegerField(default=10)
+    discount = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name = _('cart')
@@ -51,7 +51,7 @@ class Cart(models.Model):
         ordering = ('-creation_date',)
 
     def __unicode__(self):
-        return _(self.creation_date)
+        return unicode(self.creation_date)
 
 
 class ItemManager(models.Manager):
@@ -97,7 +97,7 @@ class CartItem(models.Model):
 class Order(models.Model):
     delivery_address = models.CharField(max_length=255)
     card_name = models.CharField(max_length=50)
-    card_number = models.CharField(max_length=40)
+    card_number = models.CharField(max_length=50)
     expiration_year = models.IntegerField()
     expiration_date = models.DateField()
     email = models.EmailField(max_length=100)

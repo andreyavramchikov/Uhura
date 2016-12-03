@@ -1,5 +1,7 @@
-from core import models
 import datetime
+
+from . import models
+
 
 CART_ID = 'CART-ID'
 
@@ -61,6 +63,6 @@ class Cart(object):
         cart.discount = discount
         cart.save()
 
-    def clear(self):
-        for item in self.cart.cartitem_set.all():
-            item.delete()
+    def clear(self, request):
+        self.cart.discount = 0
+        self.new(request)

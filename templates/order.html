@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <h1>You bought these items</h1>
+    {% for item in order.cartitem_set.all %}
+        <div class="columns">
+            <ul class="price">
+                <li class="header">{{ item.product }}</li>
+                <li class="header">{{ item.product.url }}</li>
+                <li><img src="{% static 'img/publication.jpg' %}"/></li>
+            </ul>
+        </div>
+    {% endfor %}
+{% endblock %}

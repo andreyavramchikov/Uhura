@@ -71,7 +71,20 @@ class PlaceOrderView(CreateView):
     def form_valid(self, form):
         form.save()
         send_confirmation_email()
-        return HttpResponseRedirect(reverse_lazy('home'))
+        cart = Cart(self.request)
+        cart.clear(self.request)
+        return HttpResponseRedirect(reverse_lazy('view_order', args=[cart.cart.pk]))
+
+
+class OrderView(DetailView):
+    model = CartModel
+    template_name = 'order.html'
+    context_object_name = 'cart'
+
+    def get_context_data(self, **kwargs):
+        context = super(OrderView, self).get_context_data(**kwargs)
+        context['order'] = self.get_object()
+        return context
 
 
 class ApplyDiscount(FormView):
