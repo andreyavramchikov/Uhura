@@ -1,11 +1,12 @@
 from django.contrib import admin
 
-# Register your models here.
+from .forms import PublicationEntityForm
 from .models import Publication, PublicationEntity, Discount
 
 
 class PublicationEntityInline(admin.TabularInline):
     model = PublicationEntity
+    form = PublicationEntityForm
     extra = 1
 
 
@@ -17,3 +18,4 @@ class PublicationAdmin(admin.ModelAdmin):
 @admin.register(Discount)
 class DiscountAdmin(admin.ModelAdmin):
     pass
+
