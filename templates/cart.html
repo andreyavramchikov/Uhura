@@ -3,7 +3,7 @@
 {% block content %}
     <table class="table table-striped table-bordered table-condensed">
         <tr>
-            <th>Product</th>
+            <th>Publication</th>
             <th>Quantity</th>
             <th>Price</th>
         </tr>
@@ -15,15 +15,15 @@
             </tr>
         {% endfor %}
     </table>
-    <h1>Total sum: {{ cart.summary }}</h1>
-    <div>
-        <form action="{% url 'discount' %}" method="POST">
-            {% csrf_token %}
-            <input type="text" name='discount' placeholder="apply discount"/>
-            <input class="btn-sm" type="submit" value="Apply Discount"/>
-        </form>
+    <h1>Total sum: <span id="total-sum">{{ cart.summary }}</span></h1>
 
-    </div>
+        <div>
+            <form id='discount' action="{% url 'discount' %}" method="POST">
+                {% csrf_token %}
+                {{ form.code }}
+                <input class="btn-sm" type="submit" value="Apply Discount"/>
+            </form>
+        </div>
     <div>
         <form action="{% url 'order' %}" method="POST">
             {% csrf_token %}

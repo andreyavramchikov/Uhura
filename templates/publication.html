@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+    {% for item in publications %}
+        <div class="columns">
+            <form action="{% url 'add_to_cart' %}" method="POST">
+                {% csrf_token %}
+                <ul class="price">
+                    <li class="header">{{ publication.name }}</li>
+                    <li class="grey">Type : {{ item.publication_type }}</li>
+                    <li><img src="{% static 'img/publication.jpg' %}"/></li>
+                    <li class="grey">Price : $ {{ item.price }}</li>
+                </ul>
+                <input type="hidden" name="id" value="{{ item.id }}"/>
+                <input type="hidden" name="quantity" value="1"/>
+                <input type="hidden" name="unit_price" value="{{ item.price }}"/>
+                <input class="btn" type="submit" value="Add to Bag"/>
+            </form>
+        </div>
+    {% endfor %}
+
+    <div class="clearfix"></div>
+
+    {% if related_items %}
+        <div class="related-items">
+            <h1>Related Items</h1>
+            {% for item in related_items %}
+                <a href="{% url 'publication' item.pk %}">
+                    <div class="columns">
+                        <ul class="price">
+                            <li class="header">{{ item.name }}</li>
+                            <li><img src="{% static 'img/publication.jpg' %}"/></li>
+                        </ul>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+{% endblock %}

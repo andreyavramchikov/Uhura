@@ -4,8 +4,10 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 
+from .validators import validate_size
 
-class Product(models.Model):
+
+class Publication(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
 
@@ -13,31 +15,23 @@ class Product(models.Model):
         return self.name
 
 
-class ProductAudio(models.Model):
-    product = models.ForeignKey(Product)
-    url = models.CharField(max_length=235)
-    price = models.IntegerField(null=True)
+class PublicationEntity(models.Model):
+    PDF = 'PDF'
+    PAPERBACK = 'PAPERBACK'
+    AUDIO = 'AUDIO'
+    PUBLICATION_TYPE_CHOICES = (
+        (PDF, 'PDF'),
+        (PAPERBACK, 'PAPERBACK'),
+        (AUDIO, 'AUDIO'),
+    )
+
+    publication = models.ForeignKey('Publication')
+    publication_type = models.CharField(max_length=10, choices=PUBLICATION_TYPE_CHOICES)
+    price = models.PositiveIntegerField(null=True)
+    link = models.CharField(max_length=255)
 
     def __unicode__(self):
-        return '{}_audio'.format(self.product.name)
-
-
-class ProductPDF(models.Model):
-    product = models.ForeignKey(Product)
-    url = models.CharField(max_length=235)
-    price = models.IntegerField(null=True)
-
-    def __unicode__(self):
-        return '{}_pdf'.format(self.product.name)
-
-
-class ProductPaperback(models.Model):
-    product = models.ForeignKey(Product)
-    url = models.CharField(max_length=235)
-    price = models.IntegerField(null=True)
-
-    def __unicode__(self):
-        return '{}_paperback'.format(self.product.name)
+        return '{}_{}'.format(self.publication.name, self.publication_type)
 
 
 class Cart(models.Model):
@@ -101,3 +95,14 @@ class Order(models.Model):
     expiration_year = models.IntegerField()
     expiration_date = models.DateField()
     email = models.EmailField(max_length=100)
+
+    def __unicode__(self):
+        return self.delivery_address
+
+
+class Discount(models.Model):
+    code = models.CharField(max_length=16, validators=[validate_size])
+    discount = models.PositiveIntegerField(default=0)
+
+    def __unicode__(self):
+        return self.code

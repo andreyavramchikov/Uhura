@@ -1,26 +1,19 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Product, ProductAudio, ProductPDF, ProductPaperback
+from .models import Publication, PublicationEntity, Discount
 
 
-class ProductAudioInline(admin.TabularInline):
-    model = ProductAudio
+class PublicationEntityInline(admin.TabularInline):
+    model = PublicationEntity
     extra = 1
 
 
-class ProductPDFInline(admin.TabularInline):
-    model = ProductPDF
-    extra = 1
+@admin.register(Publication)
+class PublicationAdmin(admin.ModelAdmin):
+    inlines = (PublicationEntityInline,)
 
 
-class ProductPaperbackInline(admin.TabularInline):
-    model = ProductPaperback
-    extra = 1
-
-
-@admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    inlines = (
-        ProductAudioInline, ProductPDFInline, ProductPaperbackInline,
-    )
+@admin.register(Discount)
+class DiscountAdmin(admin.ModelAdmin):
+    pass

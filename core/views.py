@@ -3,59 +3,51 @@ from django.http.response import HttpResponseRedirect
 from django.views.generic import CreateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
+from django.http import JsonResponse
 
+from core.forms import DiscountForm
+from core.models import PublicationEntity
 from .cart import Cart
 from .forms import CreateOrder
-from .models import Product, Cart as CartModel, ProductAudio, ProductPDF, ProductPaperback
+from .models import Cart as CartModel, Publication
 from .utils import send_confirmation_email
 
 
 class HomeView(ListView):
     template_name = 'index.html'
-    queryset = Product.objects.all()
-    context_object_name = 'products'
+    queryset = Publication.objects.all()
+    context_object_name = 'publications'
 
 
-class ProductView(DetailView):
-    model = Product
-    template_name = 'product.html'
-    context_object_name = 'product'
+class PublicationView(DetailView):
+    model = Publication
+    template_name = 'publication.html'
+    context_object_name = 'publication'
 
     def get_context_data(self, **kwargs):
-        context = super(ProductView, self).get_context_data(**kwargs)
-        context['audio'] = self.object.productaudio_set.first()
-        context['pdf'] = self.object.productpdf_set.first()
-        context['paperback'] = self.object.productpaperback_set.first()
-        context['related_items'] = Product.objects.all()
+        context = super(PublicationView, self).get_context_data(**kwargs)
+        context['publications'] = self.object.publicationentity_set.all()
+        context['related_items'] = Publication.objects.all()
         return context
 
 
 class AddToCartView(CreateView):
 
-    AUDIO = 'AUDIO'
-    PDF = 'PDF'
-    PAPERBACK = 'PAPERBACK'
-
     def post(self, request, *args, **kwargs):
         unit_price = request.POST.get('unit_price')
         quantity = request.POST.get('quantity')
-        product_type = request.POST.get('type')
-        product_id = request.POST.get('id')
-        if product_type == self.AUDIO:
-            product = ProductAudio.objects.get(id=product_id)
-        elif product_type == self.PDF:
-            product = ProductPDF.objects.get(id=product_id)
-        else:
-            product = ProductPaperback.objects.get(id=product_id)
+        # product_type = request.POST.get('type')
+        item_id = request.POST.get('id')
+        product = PublicationEntity.objects.get(id=item_id)
         cart = Cart(request)
         cart.add(product, unit_price, quantity)
         return HttpResponseRedirect(reverse_lazy('cart'))
 
 
-class CartView(TemplateView):
+class CartView(FormView):
     template_name = 'cart.html'
+    form_class = DiscountForm
     queryset = CartModel.objects.all()
     context_object_name = 'items'
 
@@ -88,10 +80,18 @@ class OrderView(DetailView):
 
 
 class ApplyDiscount(FormView):
+    """ It will be a good idea to make this view ajax"""
+    form_class = DiscountForm
 
-    def post(self, request, *args, **kwargs):
+    def form_valid(self, form):
+        request = self.request
         cart = Cart(request)
-        cart.apply_discount(request.POST.get('discount'))
-        return HttpResponseRedirect(reverse_lazy('cart'))
+        discount = form.cleaned_data['discount']
+        cart.apply_discount(form.cleaned_data['discount'])
+        return JsonResponse({'success': 'Coupon for ${} has been applied'.format(discount),
+                             'total': cart.summary()})
+
+    def form_invalid(self, form):
+        return JsonResponse({'error': 'Coupon is not correct'})
 
 
