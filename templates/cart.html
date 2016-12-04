@@ -27,12 +27,12 @@
     <div>
         <form action="{% url 'order' %}" method="POST">
             {% csrf_token %}
-            <input type="text" name="delivery_address" placeholder="Delivery address"/>
-            <input type="text" name="card_name" placeholder="Card Name"/>
-            <input type="text" name="card_number" placeholder="Card Number"/>
-            <input type="number" name="expiration_year" placeholder="expiration_year"/>
-            <input type="date" name="expiration_date" placeholder="expiration_date"/>
-            <input type="email" name="email" placeholder="Email"/>
+            <input type="text" name="delivery_address" placeholder="Delivery address" required/>
+            <input type="text" name="card_name" placeholder="Card Name" required/>
+            <input type="text" name="card_number" placeholder="Card Number" required/>
+            <input type="number" name="expiration_year" placeholder="expiration_year"  required/>
+            <input type="date" name="expiration_date" placeholder="expiration_date"  required/>
+            <input type="email" name="email" placeholder="Email" required/>
             <input class="btn-sm" type="submit" value="Order Items"/>
         </form>
     </div>

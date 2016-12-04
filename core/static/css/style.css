@@ -22,6 +22,10 @@ form {
     box-sizing: border-box;
 }
 
+.small-text {
+    font-size: 12px;
+}
+
 .columns {
     float: left;
     width: 33.3%;
