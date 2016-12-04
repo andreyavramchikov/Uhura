@@ -1,16 +1,15 @@
 from django.core.urlresolvers import reverse_lazy
+from django.http import JsonResponse
 from django.http.response import HttpResponseRedirect
 from django.views.generic import CreateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
-from django.http import JsonResponse
 
-from core.forms import DiscountForm
-from core.models import PublicationEntity
+
 from .cart import Cart
-from .forms import CreateOrder
-from .models import Cart as CartModel, Publication
+from .forms import CreateOrder, DiscountForm
+from .models import Cart as CartModel, Publication, PublicationEntity
 from .utils import send_confirmation_email
 
 
@@ -37,9 +36,7 @@ class AddToCartView(CreateView):
     def post(self, request, *args, **kwargs):
         unit_price = request.POST.get('unit_price')
         quantity = request.POST.get('quantity')
-        # product_type = request.POST.get('type')
-        item_id = request.POST.get('id')
-        product = PublicationEntity.objects.get(id=item_id)
+        product = PublicationEntity.objects.get(id=request.POST.get('id'))
         cart = Cart(request)
         cart.add(product, unit_price, quantity)
         return HttpResponseRedirect(reverse_lazy('cart'))

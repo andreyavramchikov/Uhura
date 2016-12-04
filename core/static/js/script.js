@@ -16,7 +16,6 @@ $(document).ready(function () {
                    alert(data.success);
                     total.html(data.total);
                 }
-
             }
         });
         return false;

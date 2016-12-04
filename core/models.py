@@ -28,7 +28,7 @@ class PublicationEntity(models.Model):
     publication = models.ForeignKey('Publication')
     publication_type = models.CharField(max_length=10, choices=PUBLICATION_TYPE_CHOICES)
     price = models.PositiveIntegerField(null=True)
-    link = models.CharField(max_length=255, blank=True)
+    link = models.URLField(max_length=255, blank=True)
 
     def __unicode__(self):
         return '{}_{}'.format(self.publication.name, self.publication_type)

@@ -35,8 +35,11 @@ class PublicationEntityForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(PublicationEntityForm, self).clean()
-        publication_type = cleaned_data['publication_type']
-        link = cleaned_data['link']
-        if publication_type == PublicationEntity.PAPERBACK and link:
-            raise ValidationError("Paperback Shouldn't have link")
+        try:
+            publication_type = cleaned_data['publication_type']
+            link = cleaned_data['link']
+            if publication_type == PublicationEntity.PAPERBACK and link:
+                raise ValidationError("Paperback Shouldn't have link")
+        except KeyError:
+            pass
         return cleaned_data
