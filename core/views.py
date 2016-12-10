@@ -1,3 +1,5 @@
+import logging
+
 from django.core.urlresolvers import reverse_lazy
 from django.http import JsonResponse
 from django.http.response import HttpResponseRedirect
@@ -11,6 +13,9 @@ from .cart import Cart
 from .forms import CreateOrder, DiscountForm
 from .models import Cart as CartModel, Publication, PublicationEntity
 from .utils import send_confirmation_email
+
+
+logger = logging.getLogger(__name__)
 
 
 class HomeView(ListView):
@@ -49,6 +54,7 @@ class CartView(FormView):
     context_object_name = 'items'
 
     def get(self, request, *args, **kwargs):
+        logger.info('Test Info')
         context = self.get_context_data(**kwargs)
         context['cart'] = Cart(request)
         return self.render_to_response(context)
