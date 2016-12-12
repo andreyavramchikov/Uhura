@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '(@()7+gsyog&5tzu$x*m(ju3&9q8n@8_oty7(gz-xa66@p=euk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['ec2-174-129-58-97.compute-1.amazonaws.com']
 
@@ -129,10 +129,21 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+
+    'formatters': {
+        'verbose': {
+            'format': '[%(levelname).1s:%(asctime)s:%(module)s:%(lineno)d] %(message)s'
+        },
+        'simple': {
+            'format': '[%(levelname).1s:%(module)s:%(lineno)d] %(message)s'
+        }
+    },
+
     'handlers': {
         'logfile': {
             'class': 'logging.handlers.WatchedFileHandler',
-            'filename': '/var/log/uhura.log'
+            'filename': '/var/log/uhura.log',
+            'formatter': 'verbose',
         },
     },
     'loggers': {
